@@ -11,6 +11,7 @@
 		EFE232902D2EF82F00521198 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE2328F2D2EF82F00521198 /* ContentView.swift */; };
 		EFE232922D2EF83A00521198 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFE232912D2EF83A00521198 /* Assets.xcassets */; };
 		EFE232952D2EF83A00521198 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFE232942D2EF83A00521198 /* Preview Assets.xcassets */; };
+		EFE2329F2D2EFB2500521198 /* trivia.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE2329E2D2EFB2500521198 /* trivia.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		EFE232942D2EF83A00521198 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EFE232962D2EF83A00521198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EFE232972D2EF83A00521198 /* trivia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = trivia.entitlements; sourceTree = "<group>"; };
+		EFE2329E2D2EFB2500521198 /* trivia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = trivia.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				EFE232962D2EF83A00521198 /* Info.plist */,
 				EFE232972D2EF83A00521198 /* trivia.entitlements */,
 				EFE232932D2EF83A00521198 /* Preview Content */,
+				EFE2329E2D2EFB2500521198 /* trivia.swift */,
 			);
 			path = trivia;
 			sourceTree = "<group>";
@@ -142,6 +145,7 @@
 			files = (
 				EFE232902D2EF82F00521198 /* ContentView.swift in Sources */,
 				EFE2328E2D2EF82F00521198 /* triviaApp.swift in Sources */,
+				EFE2329F2D2EFB2500521198 /* trivia.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
