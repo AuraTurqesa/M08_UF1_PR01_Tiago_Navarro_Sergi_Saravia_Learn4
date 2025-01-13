@@ -22,12 +22,13 @@ struct Trivia: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         categoria = try container.decode(String.self, forKey: .categoria)
         dificultat = try container.decode(String.self, forKey: .dificultat)
+        let preguntaContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .pregunta)
+        pregunta = try preguntaContainer.decode(String.self, forKey: .pregunta)
         respostaCorrecta = try container.decode(String.self, forKey: .respostaCorrecta)
         respostesIncorrectes = try container.decode([String].self, forKey: .respostesIncorrectes)
 
         // Extraer la pregunta de `question.text`
-        let preguntaContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .pregunta)
-        pregunta = try preguntaContainer.decode(String.self, forKey: .pregunta)
+        
     }
 }
 
@@ -46,9 +47,15 @@ struct Puntuacio {
 }
 
 // Model per a cada pregunta i resposta del joc
-struct PreguntaResposta {
+struct PreguntaResposta: Hashable, Identifiable {
+    let id: some Hashable{ pregunta }
+    let categoria: String
+    let dificultat: String
     let pregunta: String
-    let resposta: String
     let respostaCorrecta: String
-    let esCorrecte: Bool
+    let respostesIncorrectes: [String]
+    
+    static func == (lhs: PreguntaResposta, rhs: PreguntaResposta) {
+        return lhs.pregunta == rhs.pregunta
+    }
 }
