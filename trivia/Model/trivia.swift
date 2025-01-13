@@ -47,15 +47,23 @@ struct Puntuacio {
 }
 
 // Model per a cada pregunta i resposta del joc
+// Model per a cada pregunta i resposta del joc
 struct PreguntaResposta: Hashable, Identifiable {
-    let id: some Hashable{ pregunta }
+    let id: String  // Asegúrate de que id sea un tipo específico, como String
     let categoria: String
     let dificultat: String
     let pregunta: String
     let respostaCorrecta: String
     let respostesIncorrectes: [String]
     
-    static func == (lhs: PreguntaResposta, rhs: PreguntaResposta) {
+    static func == (lhs: PreguntaResposta, rhs: PreguntaResposta) -> Bool {
         return lhs.pregunta == rhs.pregunta
     }
+
+    // Esta implementación es automática para Hashable, pero también puedes implementar 'hash(into:)'
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
 }

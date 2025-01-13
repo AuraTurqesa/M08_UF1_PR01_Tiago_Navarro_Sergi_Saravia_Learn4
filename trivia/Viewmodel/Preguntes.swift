@@ -1,6 +1,6 @@
 import Foundation
 
-class TriviaManager: ObservableObject {
+public class TriviaManager: ObservableObject {
     @Published var preguntes: [Trivia] = []
     
     // Función para cargar preguntas desde la API
@@ -48,7 +48,42 @@ class TriviaManager: ObservableObject {
         }
     }
 }
-
+/*
 class Puntuacio: ObservableObject {
     
+}
+ */
+public class PreguntaRespostaManager: ObservableObject {
+    @Published var preguntes: [PreguntaResposta] = []
+    
+    // Inicialitza el manager amb preguntes buides
+    static let shared = PreguntaRespostaManager()
+    
+    private init() {}
+
+    // Funció per transformar les preguntes de Trivia a PreguntaResposta
+    func transformarPreguntesTrivia(trivia: [Trivia]) {
+        self.preguntes = trivia.map { triviaPregunta in
+            PreguntaResposta(
+                id: triviaPregunta.pregunta, // Usant la pregunta com a ID únic
+                categoria: triviaPregunta.categoria,
+                dificultat: triviaPregunta.dificultat,
+                pregunta: triviaPregunta.pregunta,
+                respostaCorrecta: triviaPregunta.respostaCorrecta,
+                respostesIncorrectes: triviaPregunta.respostesIncorrectes
+            )
+        }
+    }
+
+    // Carregar preguntes des de TriviaManager i transformar-les
+    func carregarPreguntes(completat: @escaping (Bool) -> Void) {
+        TriviaManager.shared.carregarPreguntes { [weak self] exito in
+            if exito {
+                self?.transformarPreguntesTrivia(trivia: TriviaManager.shared.preguntes)
+                completat(true)
+            } else {
+                completat(false)
+            }
+        }
+    }
 }
