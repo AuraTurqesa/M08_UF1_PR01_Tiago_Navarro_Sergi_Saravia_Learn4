@@ -1,6 +1,6 @@
 import Foundation
 
-struct Trivia: Codable {
+struct Trivia: Codable, Identifiable {
     let categoria: String
     let id: String
     let tags: [String]
