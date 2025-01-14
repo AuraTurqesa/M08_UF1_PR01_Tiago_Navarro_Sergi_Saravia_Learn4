@@ -21,14 +21,17 @@ struct ContentView: View {
                         .font(.body)
                         .padding()
 
-                    List(triviaManager.trivies) { trivia in
-                        VStack(alignment: .leading) {
-                            Text(trivia.pregunta.text)
-                                .font(.body)
-                            Text("Categoria: \(trivia.categoria)")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                    List {
+                        ForEach(triviaManager.trivies) { trivia in
+                            VStack(alignment: .leading) {
+                                Text(trivia.pregunta.text)
+                                    .font(.body)
+                                Text("Categoria: \(trivia.categoria)")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
                         }
+                        .onDelete(perform: deleteTrivia) // Aquí añadimos la acción onDelete
                     }
                 }
                 .tabItem {
@@ -192,6 +195,11 @@ struct ContentView: View {
         punts = 0
         totalRespostes = 0
         triviaManager.fetchTrivies()
+    }
+
+    // Funció para eliminar una pregunta
+    func deleteTrivia(at offsets: IndexSet) {
+        triviaManager.trivies.remove(atOffsets: offsets)
     }
 }
 
