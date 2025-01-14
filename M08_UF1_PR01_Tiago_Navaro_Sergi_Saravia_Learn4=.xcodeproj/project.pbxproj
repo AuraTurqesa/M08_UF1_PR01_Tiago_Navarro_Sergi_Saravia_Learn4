@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF9AD0442D369A3700178F0C /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9AD0432D369A3700178F0C /* EditView.swift */; };
 		EFA1C8132D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA1C8122D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift */; };
 		EFA1C8152D2EF1A700A091C4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA1C8142D2EF1A700A091C4 /* ContentView.swift */; };
 		EFA1C8172D2EF1A900A091C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFA1C8162D2EF1A900A091C4 /* Assets.xcassets */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF9AD0432D369A3700178F0C /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 		EFA1C80F2D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4=.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4=.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFA1C8122D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift; sourceTree = "<group>"; };
 		EFA1C8142D2EF1A700A091C4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				EFA1C8122D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift */,
 				EFC46F0A2D355CBC00705EA6 /* TriviaRow.swift */,
 				EFE01EA12D367582002E4392 /* RandomQuestionView.swift */,
+				EF9AD0432D369A3700178F0C /* EditView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -178,6 +181,7 @@
 				EFE01EA22D367582002E4392 /* RandomQuestionView.swift in Sources */,
 				EFA1C8242D2EF39200A091C4 /* Trivia.swift in Sources */,
 				EFA1C8132D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift in Sources */,
+				EF9AD0442D369A3700178F0C /* EditView.swift in Sources */,
 				EFC46F0B2D355CBC00705EA6 /* TriviaRow.swift in Sources */,
 				EFA1C82D2D2EF87D00A091C4 /* TriviaManager.swift in Sources */,
 			);
