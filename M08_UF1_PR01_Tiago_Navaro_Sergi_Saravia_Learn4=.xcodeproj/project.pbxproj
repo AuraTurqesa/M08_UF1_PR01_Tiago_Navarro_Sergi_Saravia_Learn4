@@ -12,7 +12,9 @@
 		EFA1C8172D2EF1A900A091C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFA1C8162D2EF1A900A091C4 /* Assets.xcassets */; };
 		EFA1C81A2D2EF1A900A091C4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFA1C8192D2EF1A900A091C4 /* Preview Assets.xcassets */; };
 		EFA1C8242D2EF39200A091C4 /* Trivia.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA1C8232D2EF39200A091C4 /* Trivia.swift */; };
-		EFA1C82D2D2EF87D00A091C4 /* Preguntes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA1C82C2D2EF87D00A091C4 /* Preguntes.swift */; };
+		EFA1C82D2D2EF87D00A091C4 /* TriviaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA1C82C2D2EF87D00A091C4 /* TriviaManager.swift */; };
+		EFC46F0B2D355CBC00705EA6 /* TriviaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC46F0A2D355CBC00705EA6 /* TriviaRow.swift */; };
+		EFE01EA22D367582002E4392 /* RandomQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE01EA12D367582002E4392 /* RandomQuestionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +25,9 @@
 		EFA1C8192D2EF1A900A091C4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EFA1C81B2D2EF1A900A091C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EFA1C8232D2EF39200A091C4 /* Trivia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trivia.swift; sourceTree = "<group>"; };
-		EFA1C82C2D2EF87D00A091C4 /* Preguntes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preguntes.swift; sourceTree = "<group>"; };
+		EFA1C82C2D2EF87D00A091C4 /* TriviaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriviaManager.swift; sourceTree = "<group>"; };
+		EFC46F0A2D355CBC00705EA6 /* TriviaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriviaRow.swift; sourceTree = "<group>"; };
+		EFE01EA12D367582002E4392 /* RandomQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomQuestionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,10 +60,9 @@
 		EFA1C8112D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4= */ = {
 			isa = PBXGroup;
 			children = (
+				EFC46F092D355CA000705EA6 /* View */,
 				EFA1C8272D2EF4D200A091C4 /* ViewModel */,
 				EFA1C8222D2EF32A00A091C4 /* Model */,
-				EFA1C8122D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift */,
-				EFA1C8142D2EF1A700A091C4 /* ContentView.swift */,
 				EFA1C8162D2EF1A900A091C4 /* Assets.xcassets */,
 				EFA1C81B2D2EF1A900A091C4 /* Info.plist */,
 				EFA1C8182D2EF1A900A091C4 /* Preview Content */,
@@ -86,9 +89,20 @@
 		EFA1C8272D2EF4D200A091C4 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				EFA1C82C2D2EF87D00A091C4 /* Preguntes.swift */,
+				EFA1C82C2D2EF87D00A091C4 /* TriviaManager.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EFC46F092D355CA000705EA6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EFA1C8142D2EF1A700A091C4 /* ContentView.swift */,
+				EFA1C8122D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift */,
+				EFC46F0A2D355CBC00705EA6 /* TriviaRow.swift */,
+				EFE01EA12D367582002E4392 /* RandomQuestionView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -161,9 +175,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFA1C8152D2EF1A700A091C4 /* ContentView.swift in Sources */,
+				EFE01EA22D367582002E4392 /* RandomQuestionView.swift in Sources */,
 				EFA1C8242D2EF39200A091C4 /* Trivia.swift in Sources */,
 				EFA1C8132D2EF1A700A091C4 /* M08_UF1_PR01_Tiago_Navaro_Sergi_Saravia_Learn4_App.swift in Sources */,
-				EFA1C82D2D2EF87D00A091C4 /* Preguntes.swift in Sources */,
+				EFC46F0B2D355CBC00705EA6 /* TriviaRow.swift in Sources */,
+				EFA1C82D2D2EF87D00A091C4 /* TriviaManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
