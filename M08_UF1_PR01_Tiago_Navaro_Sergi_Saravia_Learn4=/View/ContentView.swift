@@ -9,14 +9,14 @@ struct ContentView: View {
     @State private var currentOpcions: [String] = []
     @State private var preguntesUsades: [Trivia] = []
     @State private var jocIniciat: Bool = false
-    @State private var mostrarFinal: Bool = false // Afegim una variable per controlar la pantalla final
-    @State private var totalRespostes: Int = 0 // Guardar el total de respostes contestades
-    @State private var isEditing: Bool = false // Variable para controlar el estado de edición
+    @State private var mostrarFinal: Bool = false
+    @State private var totalRespostes: Int = 0
+    @State private var editMode: EditMode = .inactive // Control del modo de edición
 
     var body: some View {
         NavigationView {
             TabView {
-                // Primera pestanya: Llistat de preguntes
+                // Primera pestaña: Lista de preguntas
                 VStack {
                     Text("Nombre total de preguntes: \(triviaManager.trivies.count)")
                         .font(.body)
@@ -24,11 +24,6 @@ struct ContentView: View {
 
                     List {
                         ForEach(triviaManager.trivies) { trivia in
-                            NavigationLink(destination: DetailView(trivia: trivia, onSave: { updatedTrivia in
-                                if let index = triviaManager.trivies.firstIndex(where: { $0.id == updatedTrivia.id }) {
-                                    triviaManager.trivies[index] = updatedTrivia
-                                }
-                    }))
                             VStack(alignment: .leading) {
                                 Text(trivia.pregunta.text)
                                     .font(.body)
@@ -37,33 +32,16 @@ struct ContentView: View {
                                     .foregroundColor(.gray)
                             }
                         }
-                        .onDelete(perform: deleteTrivia) // Aquí añadimos la acción onDelete
-                        .onMove(perform: moveTrivia)
+                        .onDelete(perform: deleteTrivia) // Habilita eliminar preguntas
+                        .onMove(perform: moveTrivia) // Habilita mover preguntas
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            HStack {
-                                Button(action: {
-                                    isEditing.toggle()
-                                }) {
-                                    Text(isEditing ? "Done" : "Edit")
-                                        .foregroundColor(.blue)
-                                }
-                            }
-                        }
-                        ToolbarItem(placement: .navigationBarTrailing) { // Botón "+"
-                             Button(action: addTrivia) {
-                                 Image(systemName: "plus")
-                                 .foregroundColor(.blue)
-                             }    
-                        }
-                    }
+                    .environment(\.editMode, $editMode) // Vincula el modo de edición
                 }
                 .tabItem {
                     Label("Preguntes", systemImage: "list.bullet")
                 }
 
-                // Segona pestanya: Joc de trivia
+                // Segunda pestaña: Juego de trivia
                 VStack {
                     if !jocIniciat {
                         Spacer()
@@ -102,16 +80,16 @@ struct ContentView: View {
 
                         if mostraRespostaCorrecta {
                             VStack {
-                                Text(respostaSeleccionada == trivia.respostaCorrecta ? "Correcte! 🎉" : "Incorrecte😞")
+                                Text(respostaSeleccionada == trivia.respostaCorrecta ? "Correcte! 🎉" : "Incorrecte 😞")
                                     .font(.body)
                                     .multilineTextAlignment(.center)
                                     .foregroundColor(respostaSeleccionada == trivia.respostaCorrecta ? .green : .red)
-                                
+
                                 if respostaSeleccionada != trivia.respostaCorrecta {
                                     Text("La resposta correcta és:")
                                         .font(.body)
                                         .multilineTextAlignment(.center)
-                                    
+
                                     Text(trivia.respostaCorrecta)
                                         .font(.body)
                                         .multilineTextAlignment(.center)
@@ -152,16 +130,27 @@ struct ContentView: View {
                     Label("Jugar", systemImage: "gamecontroller")
                 }
             }
+            .navigationBarTitle("Trivia App", displayMode: .inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        // Cambiar el modo de edición
+                        if editMode == .active {
+                            editMode = .inactive
+                        } else {
+                            editMode = .active
+                        }
+                    }) {
+                        Text(editMode == .active ? "Done" : "Edit")
+                            .foregroundColor(.blue)
+                    }
+                }
+            }
             .onAppear {
                 if triviaManager.trivies.isEmpty {
                     triviaManager.fetchTrivies()
                 }
             }
-            .background(
-                NavigationLink(destination: FinalView(punts: punts, totalRespostes: totalRespostes, onRedirigir: redirigir), isActive: $mostrarFinal) {
-                    EmptyView()
-                }
-            )
         }
     }
 
@@ -189,7 +178,7 @@ struct ContentView: View {
         if opcio == trivia.respostaCorrecta {
             punts += 1
         }
-        totalRespostes += 1 // Incrementar les respostes contestades
+        totalRespostes += 1
     }
 
     // Opcions de resposta en ordre aleatori
@@ -198,7 +187,7 @@ struct ContentView: View {
         return opcions.shuffled()
     }
 
-    // Reiniciar el joc i tornar a la pantalla inicial
+    // Reiniciar el joc
     func reiniciarJoc() {
         jocIniciat = false
         currentTrivia = nil
@@ -214,34 +203,18 @@ struct ContentView: View {
         }
     }
 
-    // Redirigir al joc després de 10 segons
-    func redirigir() {
-        jocIniciat = false
-        punts = 0
-        totalRespostes = 0
-        triviaManager.fetchTrivies()
-    }
-
-    func moveTrivia(from source: IndexSet, to destination: Int) {
-        triviaManager.trivies.move(fromOffsets: source, toOffset: destination)
-    }
-
-    // Funció para eliminar una pregunta
+    // Función para eliminar una pregunta
     func deleteTrivia(at offsets: IndexSet) {
         triviaManager.trivies.remove(atOffsets: offsets)
     }
-    func addTrivia() {
-        let nuevaTrivia = Trivia(
-            pregunta: Pregunta(text: "Nueva pregunta"),
-            categoria: "Categoria per defecte",
-            respostaCorrecta: "Resposta correcta",
-            respostesIncorrectes: ["Incorrecta 1", "Incorrecta 2", "Incorrecta 3"]
-        )
-        triviaManager.trivies.append(nuevaTrivia)
+
+    // Función para mover una pregunta
+    func moveTrivia(from source: IndexSet, to destination: Int) {
+        triviaManager.trivies.move(fromOffsets: source, toOffset: destination)
     }
 }
 
-// Vista final on es mostra la puntuació
+// Vista final
 struct FinalView: View {
     var punts: Int
     var totalRespostes: Int
@@ -268,10 +241,15 @@ struct FinalView: View {
             .padding()
         }
         .onAppear {
-            // Redirigir automàticament després de 10 segons
             DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                 onRedirigir()
             }
         }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }
