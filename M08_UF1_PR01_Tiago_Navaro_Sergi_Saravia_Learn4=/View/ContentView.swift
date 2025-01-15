@@ -88,10 +88,10 @@ struct ContentView: View {
                                             .font(.system(size: 14))
                                             .foregroundColor(.white)
                                             .padding()
-                                            .frame(maxWidth: .infinity)
+                                            .frame(minWidth: 0, maxWidth: .infinity) // Assegura que tots els botons tinguin la mateixa amplada
                                             .background(respostaSeleccionada == opcio ? Color.gray : Color.blue)
                                             .cornerRadius(10)
-                                            .lineLimit(nil)
+                                            .lineLimit(nil) // Evitar que el text es talli
                                     }
                                 }
                             }
