@@ -11,7 +11,7 @@ struct ContentView: View {
     @State private var jocIniciat: Bool = false
     @State private var mostrarFinal: Bool = false // Afegim una variable per controlar la pantalla final
     @State private var totalRespostes: Int = 0 // Guardar el total de respostes contestades
-     @State private var isEditing: Bool = false // Variable para controlar el estado de edición
+    @State private var isEditing: Bool = false // Variable para controlar el estado de edición
 
     var body: some View {
         NavigationView {
