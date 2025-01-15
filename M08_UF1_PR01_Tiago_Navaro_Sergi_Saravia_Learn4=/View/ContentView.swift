@@ -4,30 +4,40 @@ struct ContentView: View {
     @StateObject private var triviaManager = TriviaManager()
     @State private var currentTrivia: Trivia? = nil
     @State private var respostaSeleccionada: String? = nil
-    @State private var mostraRespostaCorrecta: Bool = false
     @State private var punts: Int = 0
     @State private var currentOpcions: [String] = []
     @State private var preguntesUsades: [Trivia] = []
     @State private var jocIniciat: Bool = false
-    @State private var mostrarFinal: Bool = false // Afegim una variable per controlar la pantalla final
-    @State private var totalRespostes: Int = 0 // Guardar el total de respostes contestades
+    @State private var mostrarFinal: Bool = false
+    @State private var totalRespostes: Int = 0
+    @State private var orientation: UIDeviceOrientation = UIDevice.current.orientation // Variable per detectar l'orientació del dispositiu
+
+    init() {
+        // Iniciar la detecció de l'orientació del dispositiu
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+    }
 
     var body: some View {
         NavigationView {
             TabView {
                 // Primera pestanya: Llistat de preguntes
-                VStack {
-                    Text("Nombre total de preguntes: \(triviaManager.trivies.count)")
-                        .font(.body)
-                        .padding()
+                GeometryReader { geometry in
+                    VStack {
+                        Text("Nombre total de preguntes: \(triviaManager.trivies.count)")
+                            .font(.system(size: 14))
+                            .padding()
+                            .lineLimit(nil)
 
-                    List(triviaManager.trivies) { trivia in
-                        VStack(alignment: .leading) {
-                            Text(trivia.pregunta.text)
-                                .font(.body)
-                            Text("Categoria: \(trivia.categoria)")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                        List(triviaManager.trivies) { trivia in
+                            VStack(alignment: .leading) {
+                                Text(trivia.pregunta.text)
+                                    .font(.system(size: 14))
+                                    .lineLimit(nil)
+                                Text("Categoria: \(trivia.categoria)")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.gray)
+                                    .lineLimit(nil)
+                            }
                         }
                     }
                 }
@@ -36,89 +46,58 @@ struct ContentView: View {
                 }
 
                 // Segona pestanya: Joc de trivia
-                VStack {
-                    if !jocIniciat {
-                        Spacer()
-                        Button(action: {
-                            jocIniciat = true
-                            generarNovaPregunta()
-                        }) {
-                            Text("Començar el joc")
-                                .font(.body)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        }
-                        Spacer()
-                    } else if let trivia = currentTrivia {
-                        Text(trivia.pregunta.text)
-                            .font(.body)
+                GeometryReader { geometry in
+                    VStack {
+                        Text("Punts acumulats: \(punts)")
+                            .font(.system(size: 14))
                             .padding()
+                            .lineLimit(nil)
 
-                        ForEach(currentOpcions, id: \.self) { opcio in
+                        if !jocIniciat {
+                            Spacer()
                             Button(action: {
-                                respostaSeleccionada = opcio
-                                comprovarResposta(opcio: opcio, trivia: trivia)
+                                jocIniciat = true
+                                generarNovaPregunta()
                             }) {
-                                Text(opcio)
-                                    .font(.body)
+                                Text("Començar el joc")
+                                    .font(.system(size: 14))
                                     .foregroundColor(.white)
                                     .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(respostaSeleccionada == opcio ? Color.gray : Color.blue)
+                                    .background(Color.blue)
                                     .cornerRadius(10)
+                                    .lineLimit(nil)
                             }
-                        }
-                        .padding(.horizontal)
+                            Spacer()
+                        } else if let trivia = currentTrivia {
+                            Text(trivia.pregunta.text)
+                                .font(.system(size: 14))
+                                .padding()
+                                .lineLimit(nil)
 
-                        if mostraRespostaCorrecta {
-                            VStack {
-                                Text(respostaSeleccionada == trivia.respostaCorrecta ? "Correcte! 🎉" : "Incorrecte😞")
-                                    .font(.body)
-                                    .multilineTextAlignment(.center)
-                                    .foregroundColor(respostaSeleccionada == trivia.respostaCorrecta ? .green : .red)
-                                
-                                if respostaSeleccionada != trivia.respostaCorrecta {
-                                    Text("La resposta correcta és:")
-                                        .font(.body)
-                                        .multilineTextAlignment(.center)
-                                    
-                                    Text(trivia.respostaCorrecta)
-                                        .font(.body)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(.blue)
+                            // Opcions en dues columnes
+                            LazyVGrid(columns: [
+                                GridItem(.flexible()),
+                                GridItem(.flexible())
+                            ], spacing: 20) {
+                                ForEach(currentOpcions, id: \.self) { opcio in
+                                    Button(action: {
+                                        respostaSeleccionada = opcio
+                                        comprovarResposta(opcio: opcio, trivia: trivia)
+                                    }) {
+                                        Text(opcio)
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.white)
+                                            .padding()
+                                            .frame(maxWidth: .infinity)
+                                            .background(respostaSeleccionada == opcio ? Color.gray : Color.blue)
+                                            .cornerRadius(10)
+                                            .lineLimit(nil)
+                                    }
                                 }
                             }
-
-                            HStack {
-                                Button(action: reiniciarJoc) {
-                                    Text("Reiniciar")
-                                        .font(.body)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color.orange)
-                                        .cornerRadius(10)
-                                }
-
-                                Button(action: generarNovaPregunta) {
-                                    Text("Continuar")
-                                        .font(.body)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color.green)
-                                        .cornerRadius(10)
-                                }
-                            }
-                            .padding(.top)
+                            .padding(.horizontal)
                         }
                     }
-
-                    Spacer()
-
-                    Text("Punts acumulats: \(punts)")
-                        .font(.body)
-                        .padding()
                 }
                 .tabItem {
                     Label("Jugar", systemImage: "gamecontroller")
@@ -128,6 +107,15 @@ struct ContentView: View {
                 if triviaManager.trivies.isEmpty {
                     triviaManager.fetchTrivies()
                 }
+
+                // Afegir l'observador per canviar l'orientació
+                NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { _ in
+                    self.orientation = UIDevice.current.orientation
+                }
+            }
+            .onDisappear {
+                // Deixar de generar notificacions quan la vista desaparegui
+                UIDevice.current.endGeneratingDeviceOrientationNotifications()
             }
             .background(
                 NavigationLink(destination: FinalView(punts: punts, totalRespostes: totalRespostes, onRedirigir: redirigir), isActive: $mostrarFinal) {
@@ -135,12 +123,16 @@ struct ContentView: View {
                 }
             )
         }
+        .onChange(of: orientation) { newOrientation in
+            if newOrientation == .portraitUpsideDown {
+                // Quan estigui al revés, rotar la vista
+                print("Dispositiu al revés")
+            }
+        }
     }
 
-    // Generar una nova pregunta
     func generarNovaPregunta() {
         respostaSeleccionada = nil
-        mostraRespostaCorrecta = false
 
         if triviaManager.trivies.isEmpty {
             triviaManager.trivies = preguntesUsades.shuffled()
@@ -155,76 +147,93 @@ struct ContentView: View {
         }
     }
 
-    // Comprovar si la resposta és correcta
     func comprovarResposta(opcio: String, trivia: Trivia) {
-        mostraRespostaCorrecta = true
         if opcio == trivia.respostaCorrecta {
             punts += 1
         }
-        totalRespostes += 1 // Incrementar les respostes contestades
+        totalRespostes += 1
+
+        // Mostrar alerta amb dos botons
+        let titol = opcio == trivia.respostaCorrecta ? "Correcte!" : "Incorrecte"
+        let missatge = opcio == trivia.respostaCorrecta ? "🎉 Resposta correcta!" : "😞 La resposta correcta és: \(trivia.respostaCorrecta)"
+        
+        mostrarAlert(titol: titol, missatge: missatge, onContinuar: generarNovaPregunta, onReiniciar: reiniciarJoc)
     }
 
-    // Opcions de resposta en ordre aleatori
     func opcionsAleatories(trivia: Trivia) -> [String] {
         let opcions = trivia.respostesIncorrectes + [trivia.respostaCorrecta]
         return opcions.shuffled()
     }
 
-    // Reiniciar el joc i tornar a la pantalla inicial
     func reiniciarJoc() {
         jocIniciat = false
         currentTrivia = nil
         respostaSeleccionada = nil
-        mostraRespostaCorrecta = false
         preguntesUsades.removeAll()
         triviaManager.fetchTrivies()
 
-        // Mostrar la pantalla final durant 10 segons
         mostrarFinal = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
             mostrarFinal = false
         }
     }
 
-    // Redirigir al joc després de 10 segons
     func redirigir() {
         jocIniciat = false
         punts = 0
         totalRespostes = 0
         triviaManager.fetchTrivies()
     }
+
+    func mostrarAlert(titol: String, missatge: String, onContinuar: @escaping () -> Void, onReiniciar: @escaping () -> Void) {
+        let alert = UIAlertController(title: titol, message: missatge, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Reiniciar", style: .destructive, handler: { _ in
+            onReiniciar()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Continuar", style: .default, handler: { _ in
+            onContinuar()
+        }))
+        
+        if let rootVC = UIApplication.shared.windows.first?.rootViewController {
+            rootVC.present(alert, animated: true, completion: nil)
+        }
+    }
 }
 
-// Vista final on es mostra la puntuació
 struct FinalView: View {
     var punts: Int
     var totalRespostes: Int
     var onRedirigir: () -> Void
 
     var body: some View {
-        VStack {
-            Text("Has contestat \(totalRespostes) respostes.")
-                .font(.title)
-                .padding()
-
-            Spacer()
-
-            Button(action: {
-                onRedirigir()
-            }) {
-                Text("Tornar al joc")
-                    .font(.body)
-                    .foregroundColor(.white)
+        GeometryReader { geometry in
+            VStack {
+                Text("Has contestat \(totalRespostes) respostes.")
+                    .font(.system(size: 16))
                     .padding()
-                    .background(Color.green)
-                    .cornerRadius(10)
+                    .lineLimit(nil)
+
+                Spacer()
+
+                Button(action: {
+                    onRedirigir()
+                }) {
+                    Text("Tornar al joc")
+                        .font(.system(size: 14))
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.green)
+                        .cornerRadius(10)
+                        .lineLimit(nil)
+                }
+                .padding()
             }
-            .padding()
-        }
-        .onAppear {
-            // Redirigir automàticament després de 10 segons
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                onRedirigir()
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                    onRedirigir()
+                }
             }
         }
     }
