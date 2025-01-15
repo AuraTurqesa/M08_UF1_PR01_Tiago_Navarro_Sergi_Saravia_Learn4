@@ -12,6 +12,13 @@ struct ContentView: View {
     @State private var mostrarFinal: Bool = false
     @State private var totalRespostes: Int = 0
     @State private var editMode: EditMode = .inactive // Control del modo de edición
+    
+    // Para manejar la presentación del formulario de añadir pregunta
+    @State private var showAddQuestionModal: Bool = false
+    @State private var newPreguntaText: String = ""
+    @State private var newCategoria: String = ""
+    @State private var newRespostaCorrecta: String = ""
+    @State private var newRespostesIncorrectes: [String] = Array(repeating: "", count: 3)
 
     var body: some View {
         NavigationView {
@@ -28,6 +35,17 @@ struct ContentView: View {
                                 Text(trivia.pregunta.text)
                                     .font(.body)
                                 Text("Categoria: \(trivia.categoria)")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        .onDelete(perform: deleteTrivia) // Habilita eliminar preguntas
+                        .onMove(perform: moveTrivia)
+                        ForEach(triviaManager.create) { cr in
+                            VStack(alignment: .leading) {
+                                Text(cr.pregunta)
+                                    .font(.body)
+                                Text("Categoria: \(cr.categoria)")
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
@@ -145,16 +163,52 @@ struct ContentView: View {
                             .foregroundColor(.blue)
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("+") {
+                        showAddQuestionModal.toggle() // Mostrar el formulario modal
+                    }
+                    .foregroundColor(.blue)
+                }
             }
             .onAppear {
                 if triviaManager.trivies.isEmpty {
                     triviaManager.fetchTrivies()
                 }
             }
+            .sheet(isPresented: $showAddQuestionModal) {
+                // Vista de la hoja modal para agregar una nueva pregunta
+                AddQuestionModalView(
+                    newPreguntaText: $newPreguntaText,
+                    newCategoria: $newCategoria,
+                    newRespostaCorrecta: $newRespostaCorrecta,
+                    newRespostesIncorrectes: $newRespostesIncorrectes,
+                    onSave: addNewQuestion
+                )
+            }
         }
     }
 
-    // Generar una nova pregunta
+    // Función para agregar una nueva pregunta
+    func addNewQuestion() {
+        let newTrivia = Created(
+            pregunta: newPreguntaText,
+            categoria: newCategoria,
+            respostaCorrecta: newRespostaCorrecta,
+            respostesIncorrectes: newRespostesIncorrectes
+        )
+        triviaManager.create.append(newTrivia)
+        
+        // Limpiar campos del formulario
+        newPreguntaText = ""
+        newCategoria = ""
+        newRespostaCorrecta = ""
+        newRespostesIncorrectes = Array(repeating: "", count: 3)
+        
+        // Cerrar el modal
+        showAddQuestionModal = false
+    }
+
+    // Generar una nueva pregunta
     func generarNovaPregunta() {
         respostaSeleccionada = nil
         mostraRespostaCorrecta = false
@@ -172,7 +226,7 @@ struct ContentView: View {
         }
     }
 
-    // Comprovar si la resposta és correcta
+    // Comprobar si la respuesta es correcta
     func comprovarResposta(opcio: String, trivia: Trivia) {
         mostraRespostaCorrecta = true
         if opcio == trivia.respostaCorrecta {
@@ -181,13 +235,13 @@ struct ContentView: View {
         totalRespostes += 1
     }
 
-    // Opcions de resposta en ordre aleatori
+    // Opciones de respuesta aleatorias
     func opcionsAleatories(trivia: Trivia) -> [String] {
         let opcions = trivia.respostesIncorrectes + [trivia.respostaCorrecta]
         return opcions.shuffled()
     }
 
-    // Reiniciar el joc
+    // Reiniciar el juego
     func reiniciarJoc() {
         jocIniciat = false
         currentTrivia = nil
@@ -196,7 +250,7 @@ struct ContentView: View {
         preguntesUsades.removeAll()
         triviaManager.fetchTrivies()
 
-        // Mostrar la pantalla final durant 10 segons
+        // Mostrar la pantalla final durante 10 segundos
         mostrarFinal = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
             mostrarFinal = false
@@ -213,8 +267,6 @@ struct ContentView: View {
         triviaManager.trivies.move(fromOffsets: source, toOffset: destination)
     }
 }
-
-// Vista final
 struct FinalView: View {
     var punts: Int
     var totalRespostes: Int
@@ -244,6 +296,43 @@ struct FinalView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                 onRedirigir()
             }
+        }
+    }
+}
+
+// Vista de formulario modal para agregar una pregunta
+struct AddQuestionModalView: View {
+    @Binding var newPreguntaText: String
+    @Binding var newCategoria: String
+    @Binding var newRespostaCorrecta: String
+    @Binding var newRespostesIncorrectes: [String]
+    var onSave: () -> Void
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Pregunta")) {
+                    TextField("Escribe la pregunta", text: $newPreguntaText)
+                }
+
+                Section(header: Text("Categoría")) {
+                    TextField("Escribe la categoría", text: $newCategoria)
+                }
+
+                Section(header: Text("Respuesta Correcta")) {
+                    TextField("Escribe la respuesta correcta", text: $newRespostaCorrecta)
+                }
+
+                Section(header: Text("Respuestas Incorrectas")) {
+                    ForEach(0..<newRespostesIncorrectes.count, id: \.self) { index in
+                        TextField("Respuesta incorrecta \(index + 1)", text: $newRespostesIncorrectes[index])
+                    }
+                }
+            }
+            .navigationBarTitle("Agregar Pregunta")
+            .navigationBarItems(trailing: Button("Guardar") {
+                onSave()
+            })
         }
     }
 }

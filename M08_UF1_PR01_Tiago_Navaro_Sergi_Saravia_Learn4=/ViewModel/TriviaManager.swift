@@ -3,8 +3,14 @@ import Foundation
 class TriviaManager: ObservableObject {
     @Published var trivies: [Trivia] = []  // Array per desar totes les preguntes
     @Published var errorMessage: String?
+    @Published var create: [Created] = []
 
     private let apiURL = "https://the-trivia-api.com/v2/questions"
+    
+    func addCreated(pregunta: String, categoria: String, respostaCorrecta: String, respostesIncorrectes: [String]) {
+            let newTrivia = Created(pregunta: pregunta, categoria: categoria, respostaCorrecta: respostaCorrecta, respostesIncorrectes: respostesIncorrectes)
+            create.append(newTrivia)  // Agregar la nueva trivia a la lista
+        }
 
     // Funció per carregar les dades des de l'API
     func fetchTrivies() {

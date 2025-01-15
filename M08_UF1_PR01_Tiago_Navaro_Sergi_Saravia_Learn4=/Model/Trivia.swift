@@ -70,3 +70,18 @@ struct Pregunta: Codable {
         case text
     }
 }
+struct Created: Identifiable {
+    var id = UUID()  // Asegura que cada trivia tenga una identificación única
+    var pregunta: String = ""
+    var categoria: String = ""
+    var respostaCorrecta: String = ""
+    var respostesIncorrectes: [String] = [""]
+    
+    // Inicializador para facilitar la creación de objetos Trivia
+    init(pregunta: String, categoria: String, respostaCorrecta: String, respostesIncorrectes: [String]) {
+        self.pregunta = pregunta
+        self.categoria = categoria
+        self.respostaCorrecta = respostaCorrecta
+        self.respostesIncorrectes = respostesIncorrectes
+    }
+}
