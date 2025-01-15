@@ -24,6 +24,11 @@ struct ContentView: View {
 
                     List {
                         ForEach(triviaManager.trivies) { trivia in
+                            NavigationLink(destination: DetailView(trivia: trivia, onSave: { updatedTrivia in
+                                if let index = triviaManager.trivies.firstIndex(where: { $0.id == updatedTrivia.id }) {
+                                    triviaManager.trivies[index] = updatedTrivia
+                                }
+                    }))
                             VStack(alignment: .leading) {
                                 Text(trivia.pregunta.text)
                                     .font(.body)
