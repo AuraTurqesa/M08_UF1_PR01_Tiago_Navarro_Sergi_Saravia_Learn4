@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var jocIniciat: Bool = false
     @State private var mostrarFinal: Bool = false // Afegim una variable per controlar la pantalla final
     @State private var totalRespostes: Int = 0 // Guardar el total de respostes contestades
+     @State private var isEditing: Bool = false // Variable para controlar el estado de edición
 
     var body: some View {
         NavigationView {
@@ -32,7 +33,20 @@ struct ContentView: View {
                             }
                         }
                         .onDelete(perform: deleteTrivia) // Aquí añadimos la acción onDelete
+                        .onMove(perform: moveTrivia)
                     }
+                    .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        HStack {
+                            Button(action: {
+                                isEditing.toggle()
+                            }) {
+                                Text(isEditing ? "Done" : "Edit")
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }
                 }
                 .tabItem {
                     Label("Preguntes", systemImage: "list.bullet")
@@ -195,6 +209,10 @@ struct ContentView: View {
         punts = 0
         totalRespostes = 0
         triviaManager.fetchTrivies()
+    }
+
+    func moveTrivia(from source: IndexSet, to destination: Int) {
+        triviaManager.trivies.move(fromOffsets: source, toOffset: destination)
     }
 
     // Funció para eliminar una pregunta
