@@ -36,17 +36,23 @@ struct ContentView: View {
                         .onMove(perform: moveTrivia)
                     }
                     .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        HStack {
-                            Button(action: {
-                                isEditing.toggle()
-                            }) {
-                                Text(isEditing ? "Done" : "Edit")
-                                    .foregroundColor(.blue)
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            HStack {
+                                Button(action: {
+                                    isEditing.toggle()
+                                }) {
+                                    Text(isEditing ? "Done" : "Edit")
+                                        .foregroundColor(.blue)
+                                }
                             }
                         }
+                        ToolbarItem(placement: .navigationBarTrailing) { // Botón "+"
+                             Button(action: addTrivia) {
+                                 Image(systemName: "plus")
+                                 .foregroundColor(.blue)
+                             }    
+                        }
                     }
-                }
                 }
                 .tabItem {
                     Label("Preguntes", systemImage: "list.bullet")
@@ -218,6 +224,15 @@ struct ContentView: View {
     // Funció para eliminar una pregunta
     func deleteTrivia(at offsets: IndexSet) {
         triviaManager.trivies.remove(atOffsets: offsets)
+    }
+    func addTrivia() {
+        let nuevaTrivia = Trivia(
+            pregunta: Pregunta(text: "Nueva pregunta"),
+            categoria: "Categoria per defecte",
+            respostaCorrecta: "Resposta correcta",
+            respostesIncorrectes: ["Incorrecta 1", "Incorrecta 2", "Incorrecta 3"]
+        )
+        triviaManager.trivies.append(nuevaTrivia)
     }
 }
 
