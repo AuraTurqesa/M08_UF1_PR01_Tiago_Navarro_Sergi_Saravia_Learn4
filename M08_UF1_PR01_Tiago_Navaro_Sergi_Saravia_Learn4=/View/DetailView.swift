@@ -43,6 +43,8 @@ struct DetailView: View {
                             .font(.body)
                             .padding(.leading)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding()
 
                     
 
