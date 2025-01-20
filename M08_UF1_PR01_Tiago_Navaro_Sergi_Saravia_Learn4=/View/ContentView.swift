@@ -399,6 +399,7 @@ struct AddTriviaModalView: View {
                 leading: Button("Cancelar", action: { presentationMode.wrappedValue.dismiss() }),
                 trailing: Button("Guardar") {
                     onSave()
+                    presentationMode.wrappedValue.dismiss()
                 }
             )
         }
