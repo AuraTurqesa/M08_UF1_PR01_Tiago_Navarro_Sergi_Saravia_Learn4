@@ -1,42 +1,36 @@
+
+import SwiftUI
+
 struct DetailView: View {
-    @State var trivia: Trivia
-    @Environment(\.dismiss) var dismiss
-    var onSave: (Trivia) -> Void
+    var trivia: Trivia  // Recibimos un objeto `Trivia`
 
     var body: some View {
-        VStack {
-            Form {
-                Section(header: Text("Pregunta")) {
-                    TextField("Texto de la pregunta", text: $trivia.pregunta.text)
-                }
+        VStack(alignment: .leading) {
+            Text("Pregunta: \(trivia.pregunta.text)")
+                .font(.title)
+                .padding(.bottom)
 
-                Section(header: Text("Categoria")) {
-                    TextField("Categoria", text: $trivia.categoria)
-                }
+            Text("Categoría: \(trivia.categoria)")
+                .font(.subheadline)
+                .padding(.bottom)
 
-                Section(header: Text("Respostes")) {
-                    TextField("Resposta correcta", text: $trivia.respostaCorrecta)
-                    ForEach(trivia.respostesIncorrectes.indices, id: \.self) { index in
-                        TextField("Resposta incorrecta \(index + 1)", text: $trivia.respostesIncorrectes[index])
-                    }
-                }
+            Text("Dificultad: \(trivia.dificultat)")
+                .font(.subheadline)
+                .padding(.bottom)
+
+            Text("Respuestas Incorrectas:")
+                .font(.subheadline)
+                .padding(.top)
+            
+            ForEach(trivia.respostesIncorrectes, id: \.self) { respuesta in
+                Text("- \(respuesta)")
+                    .font(.body)
+                    .padding(.leading)
             }
+
+            Spacer()
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button("Cancel") {
-                    dismiss()
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Save") {
-                    onSave(trivia)
-                    dismiss()
-                }
-            }
-        }
-        .navigationTitle("Edita la pregunta")
-        .navigationBarTitleDisplayMode(.inline)
+        .padding()
+        .navigationBarTitle("Detalles de la Pregunta", displayMode: .inline)
     }
 }
-

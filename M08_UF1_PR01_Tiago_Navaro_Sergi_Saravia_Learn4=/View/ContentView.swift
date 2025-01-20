@@ -46,12 +46,14 @@ struct ContentView: View {
 
                         List {
                             ForEach(triviaManager.trivies) { trivia in
-                                VStack(alignment: .leading) {
-                                    Text(trivia.pregunta.text)
-                                        .font(.system(size: 14))
-                                    Text("Categoria: \(trivia.categoria)")
-                                        .font(.system(size: 12))
-                                        .foregroundColor(.gray)
+                                NavigationLink(destination: DetailView(trivia: trivia)){
+                                    VStack(alignment: .leading) {
+                                        Text(trivia.pregunta.text)
+                                            .font(.system(size: 14))
+                                        Text("Categoria: \(trivia.categoria)")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                             }
                             .onDelete(perform: deleteTrivia)
@@ -71,7 +73,6 @@ struct ContentView: View {
                             .font(.system(size: 14))
                             .padding()
                             .lineLimit(nil)
-
                         if !jocIniciat {
                             Spacer()
                             Button(action: {

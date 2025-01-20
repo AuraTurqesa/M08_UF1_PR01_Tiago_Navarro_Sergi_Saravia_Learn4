@@ -16,6 +16,7 @@
 		EFA1C82D2D2EF87D00A091C4 /* TriviaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA1C82C2D2EF87D00A091C4 /* TriviaManager.swift */; };
 		EFC46F0B2D355CBC00705EA6 /* TriviaRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC46F0A2D355CBC00705EA6 /* TriviaRow.swift */; };
 		EFDBC3D42D3E533700E83A61 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDBC3D32D3E533700E83A61 /* ContentView.swift */; };
+		EFDBC3D72D3E753700E83A61 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDBC3D62D3E753700E83A61 /* DetailView.swift */; };
 		EFE01EA22D367582002E4392 /* RandomQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFE01EA12D367582002E4392 /* RandomQuestionView.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		EFA1C82C2D2EF87D00A091C4 /* TriviaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriviaManager.swift; sourceTree = "<group>"; };
 		EFC46F0A2D355CBC00705EA6 /* TriviaRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TriviaRow.swift; sourceTree = "<group>"; };
 		EFDBC3D32D3E533700E83A61 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EFDBC3D62D3E753700E83A61 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		EFE01EA12D367582002E4392 /* RandomQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomQuestionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,6 +109,7 @@
 				EFE01EA12D367582002E4392 /* RandomQuestionView.swift */,
 				EF9AD0432D369A3700178F0C /* EditView.swift */,
 				EFDBC3D32D3E533700E83A61 /* ContentView.swift */,
+				EFDBC3D62D3E753700E83A61 /* DetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFA1C8152D2EF1A700A091C4 /* ContentViewOld.swift in Sources */,
+				EFDBC3D72D3E753700E83A61 /* DetailView.swift in Sources */,
 				EFE01EA22D367582002E4392 /* RandomQuestionView.swift in Sources */,
 				EFDBC3D42D3E533700E83A61 /* ContentView.swift in Sources */,
 				EFA1C8242D2EF39200A091C4 /* Trivia.swift in Sources */,
