@@ -338,7 +338,10 @@ struct AddTriviaModalView: View {
     @Binding var tipus: String
     @Binding var puntsAcumulats: Int
     var onSave: () -> Void
-
+    
+    @State private var showAlert = false // Controla si la alerta se muestra
+    @State private var alertMessage = "" // Mensaje de la alerta
+    
     var body: some View {
         NavigationView {
             Form {
@@ -399,11 +402,30 @@ struct AddTriviaModalView: View {
             .navigationBarItems(
                 leading: Button("Cancelar", action: { presentationMode.wrappedValue.dismiss() }),
                 trailing: Button("Guardar") {
-                    onSave()
-                    presentationMode.wrappedValue.dismiss()
+                    if validarCampos() {
+                        onSave()
+                        presentationMode.wrappedValue.dismiss()
+                    } else {
+                        showAlert = true // Mostrar la alerta si los campos no son válidos
+                    }
                 }
             )
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Campos Incompletos"),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("Aceptar"))
+                )
+            }
         }
     }
+    
+    // Función para validar que todos los campos estén llenos
+    func validarCampos() -> Bool {
+        if pregunta.isEmpty || categoria.isEmpty || id.isEmpty || dificultat.isEmpty || respostaCorrecta.isEmpty || respostesIncorrectes.contains(where: { $0.isEmpty }) {
+            alertMessage = "Todos los campos son obligatorios, por favor llena todos los campos."
+            return false
+        }
+        return true
+    }
 }
-
