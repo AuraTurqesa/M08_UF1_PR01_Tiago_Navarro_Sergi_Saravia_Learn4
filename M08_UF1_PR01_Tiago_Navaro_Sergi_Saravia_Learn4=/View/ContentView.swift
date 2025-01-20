@@ -39,7 +39,7 @@ struct ContentView: View {
                 // Primera pestanya: Llistat de preguntes
                 GeometryReader { geometry in
                     VStack {
-                        Text("Nombre total de preguntes: \(triviaManager.trivies.count)")
+                        Text("Nombre total de preguntas: \(triviaManager.trivies.count)")
                             .font(.system(size: 14))
                             .padding()
                             .lineLimit(nil)
@@ -63,13 +63,13 @@ struct ContentView: View {
                     .environment(\.editMode, $editMode)
                 }
                 .tabItem {
-                    Label("Preguntes", systemImage: "list.bullet")
+                    Label("Preguntas", systemImage: "list.bullet")
                 }
 
                 // Segona pestanya: Joc de trivia
                 GeometryReader { geometry in
                     VStack {
-                        Text("Punts acumulats: \(punts)")
+                        Text("Puntos acumulados: \(punts)")
                             .font(.system(size: 14))
                             .padding()
                             .lineLimit(nil)
@@ -79,7 +79,7 @@ struct ContentView: View {
                                 jocIniciat = true
                                 generarNovaPregunta()
                             }) {
-                                Text("Començar el joc")
+                                Text("Comenzar el juego")
                                     .font(.system(size: 14))
                                     .foregroundColor(.white)
                                     .padding()
@@ -231,8 +231,8 @@ struct ContentView: View {
         totalRespostes += 1
 
         // Mostrar alerta con dos botones
-        let titol = opcio == trivia.respostaCorrecta ? "Correcte!" : "Incorrecte"
-        let missatge = opcio == trivia.respostaCorrecta ? "🎉 Resposta correcta!" : "😞 La resposta correcta és: \(trivia.respostaCorrecta)"
+        let titol = opcio == trivia.respostaCorrecta ? "Correcto!" : "Incorrecto"
+        let missatge = opcio == trivia.respostaCorrecta ? "🎉 Respuesta correcta!" : "😞 La respuesta correcta es: \(trivia.respostaCorrecta)"
         
         mostrarAlert(titol: titol, missatge: missatge, onContinuar: generarNovaPregunta, onReiniciar: reiniciarJoc)
     }
@@ -296,7 +296,7 @@ struct FinalView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                Text("Has contestat \(totalRespostes) respostes.")
+                Text("Has contestado \(totalRespostes) respuestas.")
                     .font(.system(size: 16))
                     .padding()
                     .lineLimit(nil)
@@ -306,7 +306,7 @@ struct FinalView: View {
                 Button(action: {
                     onRedirigir()
                 }) {
-                    Text("Tornar al joc")
+                    Text("Volver al juego")
                         .font(.system(size: 14))
                         .foregroundColor(.white)
                         .padding()
