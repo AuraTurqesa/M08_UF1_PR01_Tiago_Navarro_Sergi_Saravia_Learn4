@@ -45,6 +45,33 @@ struct Trivia: Codable, Identifiable {
         // `puntsAcumulats` tindrà un valor per defecte de 0 si no és present al JSON
         puntsAcumulats = (try? container.decode(Int.self, forKey: .puntsAcumulats)) ?? 0
     }
+    
+    /// Inicializador manual para crear una instancia desde el código.
+        init(
+            categoria: String,
+            id: String,
+            tags: [String],
+            dificultat: String,
+            regions: [String],
+            esNiche: Bool,
+            pregunta: Pregunta,
+            respostaCorrecta: String,
+            respostesIncorrectes: [String],
+            tipus: String,
+            puntsAcumulats: Int = 0
+        ) {
+            self.categoria = categoria
+            self.id = id
+            self.tags = tags
+            self.dificultat = dificultat
+            self.regions = regions
+            self.esNiche = esNiche
+            self.pregunta = pregunta
+            self.respostaCorrecta = respostaCorrecta
+            self.respostesIncorrectes = respostesIncorrectes
+            self.tipus = tipus
+            self.puntsAcumulats = puntsAcumulats
+        }
 
     // Per codificar l'estructura a JSON, incloem `puntsAcumulats`
     func encode(to encoder: Encoder) throws {

@@ -9,12 +9,27 @@ struct ContentView: View {
     @State private var preguntesUsades: [Trivia] = []
     @State private var jocIniciat: Bool = false
     @State private var mostrarFinal: Bool = false
+    @State private var showAddQuestionModal: Bool = false
     @State private var totalRespostes: Int = 0
     @State private var editMode: EditMode = .inactive
-    @State private var orientation: UIDeviceOrientation = UIDevice.current.orientation // Variable per detectar l'orientació del dispositiu
+    @State private var puntsAcumulats: Int = 0
+
+    // Variables para la nueva trivia
+    @State private var newPreguntaText: String = ""
+    @State private var newCategoria: String = ""
+    @State private var newRespostaCorrecta: String = ""
+    @State private var newDificultat: String = ""
+    @State private var newRespostesIncorrectes: [String] = Array(repeating: "", count: 3)
+    @State private var newRegions: [String] = []
+    @State private var newTags: [String] = []
+    @State private var newEsNiche: Bool = false
+    @State private var newTipo: String = ""
+    @State private var newPuntsAcumulats = 0
+    @State private var newID: String = UUID().uuidString
+
+    @State private var orientation: UIDeviceOrientation = UIDevice.current.orientation
 
     init() {
-        // Iniciar la detecció de l'orientació del dispositiu
         UIDevice.current.beginGeneratingDeviceOrientationNotifications()
     }
 
@@ -29,7 +44,7 @@ struct ContentView: View {
                             .padding()
                             .lineLimit(nil)
 
-                        List{
+                        List {
                             ForEach(triviaManager.trivies) { trivia in
                                 VStack(alignment: .leading) {
                                     Text(trivia.pregunta.text)
@@ -42,7 +57,6 @@ struct ContentView: View {
                             .onDelete(perform: deleteTrivia)
                             .onMove(perform: moveTrivia)
                         }
-                        
                     }
                     .environment(\.editMode, $editMode)
                 }
@@ -96,7 +110,7 @@ struct ContentView: View {
                                             .frame(minWidth: 0, maxWidth: .infinity) // Assegura que tots els botons tinguin la mateixa amplada
                                             .background(respostaSeleccionada == opcio ? Color.gray : Color.blue)
                                             .cornerRadius(10)
-                                            .lineLimit(nil) // Evitar que el text es talli
+                                            .lineLimit(nil)
                                     }
                                 }
                             }
@@ -122,19 +136,25 @@ struct ContentView: View {
                             .foregroundColor(.blue)
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("+") {
+                        showAddQuestionModal.toggle() // Mostrar el formulario modal
+                    }
+                    .foregroundColor(.blue)
+                }
             }
             .onAppear {
                 if triviaManager.trivies.isEmpty {
                     triviaManager.fetchTrivies()
                 }
 
-                // Afegir l'observador per canviar l'orientació
+                // Añadir el observador para cambiar la orientación
                 NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { _ in
                     self.orientation = UIDevice.current.orientation
                 }
             }
             .onDisappear {
-                // Deixar de generar notificacions quan la vista desaparegui
+                // Dejar de generar notificaciones cuando la vista desaparezca
                 UIDevice.current.endGeneratingDeviceOrientationNotifications()
             }
             .background(
@@ -142,13 +162,49 @@ struct ContentView: View {
                     EmptyView()
                 }
             )
+            .sheet(isPresented: $showAddQuestionModal) {
+                // Vista de la hoja modal para agregar una nueva pregunta
+                AddTriviaModalView(
+                    categoria: $newCategoria,
+                    id: $newID,
+                    dificultat: $newDificultat,
+                    regions: $newRegions,
+                    esNiche: $newEsNiche,
+                    pregunta: $newPreguntaText,
+                    respostaCorrecta: $newRespostaCorrecta,
+                    respostesIncorrectes: $newRespostesIncorrectes,
+                    tipus: $newTipo,
+                    puntsAcumulats: $newPuntsAcumulats,
+                    onSave: addTrivia
+                )
+            }
         }
         .onChange(of: orientation) { newOrientation in
             if newOrientation == .portraitUpsideDown {
-                // Quan estigui al revés, rotar la vista
-                print("Dispositiu al revés")
+                // Cuando está al revés, rotar la vista
+                print("Dispositivo al revés")
             }
         }
+    }
+
+    func addTrivia() {
+        // Crear un nuevo objeto Trivia
+        let newTrivia = Trivia(
+            categoria: newCategoria,
+            id: newID,
+            tags: newTags,
+            dificultat: newDificultat,
+            regions: newRegions,
+            esNiche: newEsNiche,
+            pregunta: Pregunta(text: newPreguntaText),
+            respostaCorrecta: newRespostaCorrecta,
+            respostesIncorrectes: newRespostesIncorrectes,
+            tipus: newTipo,
+            puntsAcumulats: newPuntsAcumulats // Puntos iniciales
+        )
+
+        // Agregar la nueva trivia al array de trivies en el triviaManager
+        triviaManager.trivies.append(newTrivia)
     }
 
     func generarNovaPregunta() {
@@ -173,7 +229,7 @@ struct ContentView: View {
         }
         totalRespostes += 1
 
-        // Mostrar alerta amb dos botons
+        // Mostrar alerta con dos botones
         let titol = opcio == trivia.respostaCorrecta ? "Correcte!" : "Incorrecte"
         let missatge = opcio == trivia.respostaCorrecta ? "🎉 Resposta correcta!" : "😞 La resposta correcta és: \(trivia.respostaCorrecta)"
         
@@ -220,13 +276,16 @@ struct ContentView: View {
             rootVC.present(alert, animated: true, completion: nil)
         }
     }
+
     func moveTrivia(from source: IndexSet, to destination: Int) {
         triviaManager.trivies.move(fromOffsets: source, toOffset: destination)
     }
+
     func deleteTrivia(at offsets: IndexSet) {
         triviaManager.trivies.remove(atOffsets: offsets)
     }
 }
+
 
 struct FinalView: View {
     var punts: Int
@@ -264,3 +323,85 @@ struct FinalView: View {
         }
     }
 }
+
+struct AddTriviaModalView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var categoria: String
+    @Binding var id: String
+    @Binding var dificultat: String
+    @Binding var regions: [String]
+    @Binding var esNiche: Bool
+    @Binding var pregunta: String
+    @Binding var respostaCorrecta: String
+    @Binding var respostesIncorrectes: [String]
+    @Binding var tipus: String
+    @Binding var puntsAcumulats: Int
+    var onSave: () -> Void
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Pregunta")) {
+                    TextField("Escribe la pregunta", text: $pregunta)
+                }
+                
+                Section(header: Text("Categoría")) {
+                    TextField("Escribe la categoría", text: $categoria)
+                }
+                
+                Section(header: Text("ID")) {
+                    TextField("Escribe el ID", text: $id)
+                }
+                
+                
+                Section(header: Text("Dificultad")) {
+                    TextField("Escribe la dificultad", text: $dificultat)
+                }
+                
+                Section(header: Text("Regiones")) {
+                    ForEach(0..<regions.count, id: \.self) { index in
+                        TextField("Región \(index + 1)", text: $regions[index])
+                    }
+                    Button("Agregar Región") {
+                        regions.append("")
+                    }
+                }
+                
+                Section(header: Text("Es Niche")) {
+                    Toggle("¿Es una pregunta niche?", isOn: $esNiche)
+                }
+                
+                Section(header: Text("Respuesta Correcta")) {
+                    TextField("Escribe la respuesta correcta", text: $respostaCorrecta)
+                }
+                
+                Section(header: Text("Respuestas Incorrectas")) {
+                    ForEach(0..<respostesIncorrectes.count, id: \.self) { index in
+                        TextField("Respuesta incorrecta \(index + 1)", text: $respostesIncorrectes[index])
+                    }
+                    Button("Agregar Respuesta Incorrecta") {
+                        respostesIncorrectes.append("")
+                    }
+                }
+                
+                Section(header: Text("Tipo")) {
+                    TextField("Escribe el tipo", text: $tipus)
+                }
+                
+                Section(header: Text("Puntos Acumulados")) {
+                    Stepper(value: $puntsAcumulats, in: 0...100) {
+                        Text("Puntos: \(puntsAcumulats)")
+                    }
+                }
+            }
+            .navigationBarTitle("Agregar Trivia")
+            .navigationBarItems(
+                leading: Button("Cancelar", action: { presentationMode.wrappedValue.dismiss() }),
+                trailing: Button("Guardar") {
+                    onSave()
+                }
+            )
+        }
+    }
+}
+
